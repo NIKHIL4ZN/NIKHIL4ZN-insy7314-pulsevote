@@ -1,0 +1,115 @@
+/* General Page */
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+/* Layout */
+
+.app-shell {
+  max-width: 900px;
+  margin: auto;
+}
+
+/* Header */
+
+header {
+  background-color: #1f2937;
+  color: white;
+  padding: 20px;
+}
+
+header h1 {
+  margin: 0 0 15px;
+}
+
+/* Navigation */
+
+nav {
+  display: flex;
+  gap: 15px;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+}
+
+nav a:hover {
+  background-color: #374151;
+}
+
+.active {
+  background-color: #2563eb;
+}
+
+/* Main Content */
+
+main {
+  padding: 25px;
+}
+
+/* Cards */
+
+.card {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0px 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Inputs */
+
+input {
+  display: block;
+  width: 100%;
+  max-width: 350px;
+  padding: 10px;
+  margin: 12px 0;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+/* Buttons */
+
+button {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+button:hover {
+  background-color: #1d4ed8;
+}
+
+/* Error Message */
+
+.error-message {
+  background-color: #2f1c1c;
+  color: #ff6b6b;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  border: 1px solid #ff6b6b;
+}
+
+/* Success Message */
+
+.success-message {
+  background-color: #1e2f1e;
+  color: #4afc75;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  border: 1px solid #4afc75;
+}
