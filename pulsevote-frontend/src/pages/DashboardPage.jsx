@@ -1,33 +1,20 @@
-import { useEffect, useState } from "react";
+import AdminDashboard from "../components/AdminDashboard";
+import ManagerDashboard from "../components/ManagerDashboard";
+import UserDashboard from "../components/UserDashboard";
+import { getCurrentUser, hasRole } from "../utils/auth";
 
 export default function DashboardPage() {
-  const [authorized, setAuthorized] = useState(null);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (token) {
-      setAuthorized(true);
-    } else {
-      setAuthorized(false);
-    }
-  }, []);
+  const user = getCurrentUser();
 
   return (
-    <div className="card">
-      <h2>Dashboard</h2>
-
-      {authorized === false && (
-        <div className="error-message">
-          You are not authorized to access this content.
-        </div>
-      )}
-
-      {authorized === true && (
-        <div className="success-message">
-          You are authorized and can see this protected content.
-        </div>
-      )}
+    <div className="dashboard-page">
+      <section className="card account-summary">
+        <h2>Dashboard</h2>
+        <p>Signed in as <strong>{user?.email}</strong></p>
+      </section>
+      {hasRole("admin") && <AdminDashboard />}
+      {hasRole("manager") && <ManagerDashboard />}
+      {hasRole("user") && <UserDashboard />}
     </div>
   );
 }

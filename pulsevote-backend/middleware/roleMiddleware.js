@@ -11,7 +11,6 @@ const requireRole = (role) => {
         });
       }
 
-      // Global admin check
       if (role === "admin") {
         const isAdmin = user.roles.some(r => r.role === "admin");
 
@@ -34,7 +33,6 @@ const requireRole = (role) => {
           r.organisationId?.toString() === orgId)
       );
 
-      // Admin can bypass organisation role checks
       if (!hasRole && !user.roles.some(r => r.role === "admin")) {
         return res.status(403).json({
           message: "Forbidden"

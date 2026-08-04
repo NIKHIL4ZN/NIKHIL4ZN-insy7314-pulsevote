@@ -32,9 +32,9 @@ app.use(
         "data:"
       ],
       connectSrc: [
-        "'self'",
-        "https://localhost:5000"
-      ]
+  "'self'",
+  "https://localhost:5000"
+]
     }
   })
 );

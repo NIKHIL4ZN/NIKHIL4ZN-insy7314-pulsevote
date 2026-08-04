@@ -5,13 +5,19 @@ const { requireRole } = require("../middleware/roleMiddleware");
 
 const {
   createOrganisation,
+  getMyOrganisations,
   generateJoinCode,
   joinOrganisation
 } = require("../controllers/organisationController");
 
 const router = express.Router();
 
-// Only managers can create organisations
+router.get(
+  "/my-organisations",
+  protect,
+  getMyOrganisations
+);
+
 router.post(
   "/create-organisation",
   protect,
@@ -19,7 +25,6 @@ router.post(
   createOrganisation
 );
 
-// Only managers can regenerate join codes
 router.post(
   "/generate-join-code/:organisationId",
   protect,
@@ -27,7 +32,6 @@ router.post(
   generateJoinCode
 );
 
-// Any authenticated user can join an organisation
 router.post(
   "/join-organisation",
   protect,

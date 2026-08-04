@@ -1,17 +1,6 @@
-const jwt = require("jsonwebtoken");
+const generateToken = require("../utils/generateToken");
 const User = require("../models/User");
 const { validationResult } = require("express-validator");
-
-const generateToken = (user) =>
-  jwt.sign(
-    {
-      id: user._id,
-      email: user.email,
-      roles: user.roles
-    },
-    process.env.JWT_SECRET,
-    { expiresIn: "1h" }
-  );
 
 // Register normal user
 exports.registerUser = async (req, res) => {
@@ -46,17 +35,15 @@ exports.registerUser = async (req, res) => {
       ]
     });
 
-    const token = generateToken(user);
-
-    res.status(201).json({
+    return res.status(201).json({
       message: "User registered",
-      token
+      token: generateToken(user)
     });
 
   } catch (err) {
     console.error(err);
 
-    res.status(500).json({
+    return res.status(500).json({
       error: "Server error"
     });
   }
@@ -106,17 +93,15 @@ exports.registerManager = async (req, res) => {
       ]
     });
 
-    const token = generateToken(managerUser);
-
-    res.status(201).json({
+    return res.status(201).json({
       message: "Manager registered",
-      token
+      token: generateToken(managerUser)
     });
 
   } catch (err) {
     console.error(err);
 
-    res.status(500).json({
+    return res.status(500).json({
       error: "Server error"
     });
   }
@@ -140,17 +125,11 @@ exports.registerAdmin = async (req, res) => {
       "roles.role": "admin"
     });
 
+
     if (adminExists) {
-      const requestingUser = await User.findById(req.user.id);
-
-      const isAdmin =
-        requestingUser?.roles?.some(r => r.role === "admin");
-
-      if (!isAdmin) {
-        return res.status(403).json({
-          message: "Only admins can create admins"
-        });
-      }
+      return res.status(403).json({
+        message: "The first admin has already been created"
+      });
     }
 
     const existing = await User.findOne({ email });
@@ -172,17 +151,15 @@ exports.registerAdmin = async (req, res) => {
       ]
     });
 
-    const token = generateToken(adminUser);
-
-    res.status(201).json({
+    return res.status(201).json({
       message: "Admin registered",
-      token
+      token: generateToken(adminUser)
     });
 
   } catch (err) {
     console.error(err);
 
-    res.status(500).json({
+    return res.status(500).json({
       error: "Server error"
     });
   }
@@ -210,14 +187,14 @@ exports.login = async (req, res) => {
       });
     }
 
-    const token = generateToken(user);
-
-    res.json({ token });
+    return res.json({
+      token: generateToken(user)
+    });
 
   } catch (err) {
     console.error(err);
 
-    res.status(500).json({
+    return res.status(500).json({
       error: "Server error"
     });
   }
