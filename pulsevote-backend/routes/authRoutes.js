@@ -8,6 +8,11 @@ const {
   login
 } = require("../controllers/authController");
 
+const {
+  registerLimiter,
+  loginLimiter
+} = require("../middleware/rateLimiter");
+
 const { protect } = require("../middleware/authMiddleware");
 const { requireRole } = require("../middleware/roleMiddleware");
 
@@ -30,6 +35,7 @@ const passwordValidator = body("password")
 
 router.post(
   "/register-user",
+  registerLimiter,
   [emailValidator, passwordValidator],
   registerUser
 );
@@ -38,18 +44,21 @@ router.post(
   "/register-manager",
   protect,
   requireRole("admin"),
+  registerLimiter,
   [emailValidator, passwordValidator],
   registerManager
 );
 
 router.post(
   "/register-admin",
+  registerLimiter,
   [emailValidator, passwordValidator],
   registerAdmin
 );
 
 router.post(
   "/login",
+  loginLimiter,
   [
     emailValidator,
     body("password").notEmpty().trim().escape()
