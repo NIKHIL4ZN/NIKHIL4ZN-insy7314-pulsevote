@@ -22,7 +22,7 @@ const protect = (req, res, next) => {
 
     next();
 
-  } catch (err) {
+   } catch { 
 
     res.status(403).json({
       message: "Token invalid or expired"
