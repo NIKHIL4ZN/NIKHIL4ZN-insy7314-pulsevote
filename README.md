@@ -30,3 +30,7 @@ The Content Security Policy(CSP) restricts where scripts and resources can be lo
 
 9. Why are refreshed tokens returned after organisation roles change?
 When a user creates or joins an organisation, their roles change. The JWT issued when they logged in still contains the old role information. Returning a refreshed token updates the JWT with the user's new roles, allowing the frontend to immediately display the correct dashboard and permissions without requiring the user to log out and log back in.
+
+## Rate Limit
+Rate limiting is a technique used to restrict how many requests a client can make to an API within a certain time frame. It is very important for authentication endpoints because without it, attackers can repeatedly to send request to the api in an attempt to crack user account passwords or create a large number of accounts using automated scripts. A per-IP limit restricts requests based on the clients IP address and a per-identifier limits requests based on the clients unique email address. When these security systems are implemented together, they are more secure. Reverse proxies and load balancers may also affect these security systems from working effectively, that is why Express needs to be configured correctly with Trust proxy. A safe request limit should be set to protect the api while also preventing legitimate users from being blocked.
+
