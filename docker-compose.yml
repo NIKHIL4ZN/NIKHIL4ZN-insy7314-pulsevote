@@ -1,0 +1,24 @@
+services:
+  api:
+    container_name: api
+    build:
+      context: ./pulsevote-backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./pulsevote-backend/.env
+    restart: unless-stopped
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ./pulsevote-frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: http://localhost:5000/api
+    ports:
+      - "5173:80"
+    depends_on:
+      - api
+    restart: unless-stopped

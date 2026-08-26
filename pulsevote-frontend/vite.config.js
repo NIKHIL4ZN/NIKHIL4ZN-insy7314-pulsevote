@@ -1,14 +1,25 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import fs from 'fs';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import fs from "fs";
 
-// https://vite.dev/config/
+const keyPath = "ssl/key.pem";
+const certPath = "ssl/cert.pem";
+
+const hasHttpsCertificates =
+  fs.existsSync(keyPath) &&
+  fs.existsSync(certPath);
+
 export default defineConfig({
   plugins: [react()],
+
   server: {
-    https: {
-      key: fs.readFileSync('ssl/key.pem'),
-      cert: fs.readFileSync('ssl/cert.pem'),
-    },
-  },
-})
+    port: 5173,
+
+    https: hasHttpsCertificates
+      ? {
+          key: fs.readFileSync(keyPath),
+          cert: fs.readFileSync(certPath)
+        }
+      : false
+  }
+});

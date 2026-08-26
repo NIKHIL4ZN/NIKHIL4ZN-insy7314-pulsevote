@@ -24,7 +24,12 @@ dist-ssr
 *.sln
 *.sw?
 
-cert.pem
-key.pem
-localhost.pem
-localhost-key.pem
+# Environment files
+.env
+.env.*.local
+
+# SSL certificates
+ssl/
+
+# Test coverage
+coverage/
