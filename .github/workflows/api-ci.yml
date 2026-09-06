@@ -2,23 +2,21 @@ name: API CI
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   api-ci:
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: pulsevote-backend
-
     steps:
       - name: Check out repository
-  uses: actions/checkout@v5
-  with:
-    fetch-depth: 0
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v6
@@ -28,90 +26,70 @@ jobs:
           cache-dependency-path: pulsevote-backend/package-lock.json
 
       - name: Install backend dependencies
+        working-directory: pulsevote-backend
         run: npm ci
 
       - name: Lint backend
+        working-directory: pulsevote-backend
         run: npm run lint
 
       - name: Run unit tests with coverage
-  run: npm run test:coverage
+        working-directory: pulsevote-backend
+        run: npm run test:coverage
 
-  - name: Analyse backend with SonarQube Cloud
-  uses: SonarSource/sonarqube-scan-action@v8
-  env:
-    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  with:
-    projectBaseDir: pulsevote-backend
-    args: >
-      -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
-      -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
-      -Dsonar.qualitygate.wait=true
+      - name: Analyse backend with SonarQube Cloud
+        uses: SonarSource/sonarqube-scan-action@v8
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: pulsevote-backend
+          args: >
+            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
+            -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
+            -Dsonar.qualitygate.wait=true
 
-      - name: Clear CI test database
+      - name: Clear CI database
+        working-directory: pulsevote-backend
         env:
           MONGO_URI: ${{ secrets.MONGO_URI }}
-          ALLOW_DB_CLEAR: true
+          ALLOW_DB_CLEAR: "true"
         run: npm run db:clear
 
-      - name: Build API Docker image
-        run: docker build -t pulsevote-api-ci .
+      - name: Build backend Docker image
+        run: docker build -t pulsevote-api ./pulsevote-backend
 
-      - name: Create Docker test network
-        run: docker network create pulsevote-ci
-
-      - name: Start containerised API
+      - name: Start backend container
         run: |
           docker run -d \
             --name pulsevote-api \
-            --network pulsevote-ci \
-            -e PORT=5000 \
-            -e USE_HTTPS=false \
+            -p 5000:5000 \
             -e MONGO_URI="${{ secrets.MONGO_URI }}" \
             -e JWT_SECRET="${{ secrets.JWT_SECRET }}" \
-            pulsevote-api-ci
+            pulsevote-api
 
       - name: Wait for API health check
         run: |
           for i in {1..30}; do
-            STATUS=$(docker inspect --format='{{.State.Health.Status}}' pulsevote-api 2>/dev/null || echo starting)
-            echo "API health status: $STATUS"
-
-            if [ "$STATUS" = "healthy" ]; then
+            if curl -f http://localhost:5000/health; then
+              echo "API is healthy"
               exit 0
             fi
-
-            if [ "$(docker inspect --format='{{.State.Status}}' pulsevote-api 2>/dev/null)" = "exited" ]; then
-              docker logs pulsevote-api
-              exit 1
-            fi
-
             sleep 2
           done
 
+          echo "API health check failed"
           docker logs pulsevote-api
           exit 1
 
-      - name: Run existing Postman collection with Newman
-        run: |
-          docker run --rm \
-            --network pulsevote-ci \
-            -v "${{ github.workspace }}/pulsevote-backend/postman:/etc/newman" \
-            postman/newman:alpine \
-            run "/etc/newman/PulseVote RBAC Test.postman_collection.json" \
-            --env-var PROTOCOL=http \
-            --env-var HOST=pulsevote-api \
-            --env-var PORT=5000 \
-            --env-var ADMIN_PASSWORD="${{ secrets.POSTMAN_TEST_PASSWORD }}" \
-            --env-var MANAGER_PASSWORD="${{ secrets.POSTMAN_TEST_PASSWORD }}" \
-            --env-var USER_PASSWORD="${{ secrets.POSTMAN_TEST_PASSWORD }}" \
-            --bail
+      - name: Install Newman
+        run: npm install -g newman
 
-      - name: Show API logs if the pipeline fails
-        if: failure()
-        run: docker logs pulsevote-api || true
-
-      - name: Clean up Docker resources
-        if: always()
+      - name: Run Postman RBAC tests
+        working-directory: pulsevote-backend
+        env:
+          POSTMAN_TEST_PASSWORD: ${{ secrets.POSTMAN_TEST_PASSWORD }}
         run: |
-          docker rm -f pulsevote-api 2>/dev/null || true
-          docker network rm pulsevote-ci 2>/dev/null || true
+          newman run "postman/PulseVote RBAC Test.postman_collection.json" \
+            --env-var "ADMIN_PASSWORD=$POSTMAN_TEST_PASSWORD" \
+            --env-var "MANAGER_PASSWORD=$POSTMAN_TEST_PASSWORD" \
+            --env-var "USER_PASSWORD=$POSTMAN_TEST_PASSWORD"
