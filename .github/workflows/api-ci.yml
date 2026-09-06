@@ -81,10 +81,10 @@ jobs:
           docker logs pulsevote-api
           exit 1
 
-      - name: Install Newman
+            - name: Install Newman
         run: npm install -g newman
 
-           - name: Run Postman RBAC tests
+      - name: Run Postman RBAC tests
         working-directory: pulsevote-backend
         env:
           POSTMAN_TEST_PASSWORD: ${{ secrets.POSTMAN_TEST_PASSWORD }}
