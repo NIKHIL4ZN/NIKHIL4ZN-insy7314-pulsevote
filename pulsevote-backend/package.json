@@ -7,7 +7,8 @@
     "dev": "nodemon server.js",
     "start": "node server.js",
     "test": "jest --passWithNoTests",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "db:clear": "node scripts/clearDatabase.js"
   },
   "keywords": [],
   "author": "",

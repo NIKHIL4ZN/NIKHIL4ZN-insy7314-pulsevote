@@ -1,0 +1,689 @@
+{
+  "info": {
+    "_postman_id": "d25cbf57-21db-45bd-b0c9-5a8e21c01e9b",
+    "name": "PulseVote RBAC Test",
+    "description": "### Welcome to Postman! This is your first collection. \n\nCollections are your starting point for building and testing APIs. You can use this one to:\n\n• Group related requests\n• Test your API in real-world scenarios\n• Document and share your requests\n\nUpdate the name and overview whenever you’re ready to make it yours.\n\n[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "56759397",
+    "_collection_link": "https://go.postman.co/collection/56759397-d25cbf57-21db-45bd-b0c9-5a8e21c01e9b?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Create First Admin",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"admin@pulsevote.test\",\r\n  \"password\": \"{{ADMIN_PASSWORD}}\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{PROTOCOL}}://{{HOST}}:{{PORT}}/api/auth/register-admin",
+          "protocol": "{{PROTOCOL}}",
+          "host": [
+            "{{HOST}}"
+          ],
+          "port": "{{PORT}}",
+          "path": [
+            "api",
+            "auth",
+            "register-admin"
+          ]
+        },
+        "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+      },
+      "response": []
+    },
+    {
+      "name": "Login Admin",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();\n\npm.collectionVariables.set(\n    \"ADMIN_TOKEN\",\n    json.token\n);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"admin@pulsevote.test\",\n  \"password\": \"{{ADMIN_PASSWORD}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{PROTOCOL}}://{{HOST}}:{{PORT}}/api/auth/login",
+          "protocol": "{{PROTOCOL}}",
+          "host": [
+            "{{HOST}}"
+          ],
+          "port": "{{PORT}}",
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        },
+        "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+      },
+      "response": []
+    },
+    {
+      "name": "Create Manager",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();\r\n\r\npm.collectionVariables.set(\r\n    \"MANAGER_TOKEN\",\r\n    json.token\r\n);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{ADMIN_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"manager@pulsevote.test\",\r\n  \"password\": \"{{MANAGER_PASSWORD}}\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{PROTOCOL}}://{{HOST}}:{{PORT}}/api/auth/register-manager",
+          "protocol": "{{PROTOCOL}}",
+          "host": [
+            "{{HOST}}"
+          ],
+          "port": "{{PORT}}",
+          "path": [
+            "api",
+            "auth",
+            "register-manager"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();\r\n\r\npm.collectionVariables.set(\r\n    \"USER_TOKEN\",\r\n    json.token\r\n);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"user@pulsevote.test\",\r\n  \"password\": \"{{USER_PASSWORD}}\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{PROTOCOL}}://{{HOST}}:{{PORT}}/api/auth/register-user",
+          "protocol": "{{PROTOCOL}}",
+          "host": [
+            "{{HOST}}"
+          ],
+          "port": "{{PORT}}",
+          "path": [
+            "api",
+            "auth",
+            "register-user"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Login Manager",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();\r\n\r\npm.collectionVariables.set(\r\n    \"MANAGER_TOKEN\",\r\n    json.token\r\n);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"manager@pulsevote.test\",\r\n  \"password\": \"{{MANAGER_PASSWORD}}\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{PROTOCOL}}://{{HOST}}:{{PORT}}/api/auth/login",
+          "protocol": "{{PROTOCOL}}",
+          "host": [
+            "{{HOST}}"
+          ],
+          "port": "{{PORT}}",
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Organisation",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();\r\n\r\npm.collectionVariables.set(\r\n    \"ORG_ID\",\r\n    json.organisation._id\r\n);\r\n\r\npm.collectionVariables.set(\r\n    \"MANAGER_TOKEN\",\r\n    json.token\r\n);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{MANAGER_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"PulseVote Test Organisation\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{PROTOCOL}}://{{HOST}}:{{PORT}}/api/organisations/create-organisation",
+          "protocol": "{{PROTOCOL}}",
+          "host": [
+            "{{HOST}}"
+          ],
+          "port": "{{PORT}}",
+          "path": [
+            "api",
+            "organisations",
+            "create-organisation"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Generate Join Code",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();\r\n\r\npm.collectionVariables.set(\r\n    \"JOIN_CODE\",\r\n    json.joinCode\r\n);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{MANAGER_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{PROTOCOL}}://{{HOST}}:{{PORT}}/api/organisations/generate-join-code/{{ORG_ID}}",
+          "protocol": "{{PROTOCOL}}",
+          "host": [
+            "{{HOST}}"
+          ],
+          "port": "{{PORT}}",
+          "path": [
+            "api",
+            "organisations",
+            "generate-join-code",
+            "{{ORG_ID}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Login User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();\r\n\r\npm.collectionVariables.set(\r\n    \"USER_TOKEN\",\r\n    json.token\r\n);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"user@pulsevote.test\",\r\n  \"password\": \"{{USER_PASSWORD}}\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{PROTOCOL}}://{{HOST}}:{{PORT}}/api/auth/login",
+          "protocol": "{{PROTOCOL}}",
+          "host": [
+            "{{HOST}}"
+          ],
+          "port": "{{PORT}}",
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Join Organisation",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();\r\n\r\npm.collectionVariables.set(\r\n    \"USER_TOKEN\",\r\n    json.token\r\n);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{USER_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{PROTOCOL}}://{{HOST}}:{{PORT}}/api/organisations/join-organisation",
+          "protocol": "{{PROTOCOL}}",
+          "host": [
+            "{{HOST}}"
+          ],
+          "port": "{{PORT}}",
+          "path": [
+            "api",
+            "organisations",
+            "join-organisation"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Poll",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();\r\n\r\npm.collectionVariables.set(\r\n    \"POLL_ID\",\r\n    json.poll._id\r\n);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{MANAGER_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"organisationId\": \"{{ORG_ID}}\",\r\n  \"question\": \"Which option do you prefer?\",\r\n  \"options\": [\r\n    \"Option A\",\r\n    \"Option B\"\r\n  ]\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{PROTOCOL}}://{{HOST}}:{{PORT}}/api/polls/create-poll",
+          "protocol": "{{PROTOCOL}}",
+          "host": [
+            "{{HOST}}"
+          ],
+          "port": "{{PORT}}",
+          "path": [
+            "api",
+            "polls",
+            "create-poll"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Vote Poll",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{USER_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"optionIndex\": 0\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{PROTOCOL}}://{{HOST}}:{{PORT}}/api/polls/vote/{{POLL_ID}}",
+          "protocol": "{{PROTOCOL}}",
+          "host": [
+            "{{HOST}}"
+          ],
+          "port": "{{PORT}}",
+          "path": [
+            "api",
+            "polls",
+            "vote",
+            "{{POLL_ID}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Poll Results",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{USER_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{PROTOCOL}}://{{HOST}}:{{PORT}}/api/polls/get-poll-results/{{POLL_ID}}",
+          "protocol": "{{PROTOCOL}}",
+          "host": [
+            "{{HOST}}"
+          ],
+          "port": "{{PORT}}",
+          "path": [
+            "api",
+            "polls",
+            "get-poll-results",
+            "{{POLL_ID}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Organisation Polls",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{USER_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{PROTOCOL}}://{{HOST}}:{{PORT}}/api/polls/get-polls/{{ORG_ID}}",
+          "protocol": "{{PROTOCOL}}",
+          "host": [
+            "{{HOST}}"
+          ],
+          "port": "{{PORT}}",
+          "path": [
+            "api",
+            "polls",
+            "get-polls",
+            "{{ORG_ID}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Close Poll",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{MANAGER_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{PROTOCOL}}://{{HOST}}:{{PORT}}/api/polls/close/{{POLL_ID}}",
+          "protocol": "{{PROTOCOL}}",
+          "host": [
+            "{{HOST}}"
+          ],
+          "port": "{{PORT}}",
+          "path": [
+            "api",
+            "polls",
+            "close",
+            "{{POLL_ID}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Open Poll",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{MANAGER_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{PROTOCOL}}://{{HOST}}:{{PORT}}/api/polls/open/{{POLL_ID}}",
+          "protocol": "{{PROTOCOL}}",
+          "host": [
+            "{{HOST}}"
+          ],
+          "port": "{{PORT}}",
+          "path": [
+            "api",
+            "polls",
+            "open",
+            "{{POLL_ID}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "exec": [
+          "pm.test(\"Request returns a successful HTTP status\", function () {\r",
+          "    pm.expect(pm.response.code).to.be.within(200, 299);\r",
+          "});"
+        ],
+        "type": "text/javascript"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "PROTOCOL",
+      "value": ""
+    },
+    {
+      "key": "HOST",
+      "value": ""
+    },
+    {
+      "key": "PORT",
+      "value": ""
+    },
+    {
+      "key": "ADMIN_PASSWORD",
+      "value": ""
+    },
+    {
+      "key": "MANAGER_PASSWORD",
+      "value": ""
+    },
+    {
+      "key": "USER_PASSWORD",
+      "value": ""
+    },
+    {
+      "key": "ADMIN_TOKEN",
+      "value": ""
+    },
+    {
+      "key": "MANAGER_TOKEN",
+      "value": ""
+    },
+    {
+      "key": "USER_TOKEN",
+      "value": ""
+    },
+    {
+      "key": "ORG_ID",
+      "value": ""
+    },
+    {
+      "key": "JOIN_CODE =",
+      "value": ""
+    },
+    {
+      "key": "POLL_ID =",
+      "value": ""
+    }
+  ]
+}

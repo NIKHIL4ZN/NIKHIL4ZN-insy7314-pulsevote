@@ -4,8 +4,14 @@ Dockerfile*
 .dockerignore
 .git
 .gitignore
-dist
+coverage
 .vscode
+.circleci
 ssl
 .env
 .env.*.local
+test
+jest.config.js
+eslint.config.cjs
+postman
+scripts/clearDatabase.js

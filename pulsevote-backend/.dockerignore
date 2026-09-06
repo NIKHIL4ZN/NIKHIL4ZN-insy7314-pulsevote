@@ -13,3 +13,5 @@ ssl
 test
 jest.config.js
 eslint.config.cjs
+postman
+scripts/clearDatabase.js
