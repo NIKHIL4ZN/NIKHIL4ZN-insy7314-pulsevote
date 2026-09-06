@@ -81,7 +81,7 @@ jobs:
           docker logs pulsevote-api
           exit 1
 
-            - name: Install Newman
+      - name: Install Newman
         run: npm install -g newman
 
       - name: Run Postman RBAC tests
