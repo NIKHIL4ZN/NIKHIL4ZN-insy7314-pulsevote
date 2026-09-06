@@ -128,7 +128,7 @@ exports.generateJoinCode = async (req, res) => {
 
 exports.joinOrganisation = async (req, res) => {
   try {
-    const joinCode = req.body.joinCode?.trim();
+    const joinCode = req.body?.joinCode?.trim();
 
     if (!joinCode) {
       return res.status(400).json({

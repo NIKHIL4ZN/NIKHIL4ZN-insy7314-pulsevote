@@ -373,6 +373,9 @@
           }
         }
       ],
+      "protocolProfileBehavior": {
+        "disabledSystemHeaders": {}
+      },
       "request": {
         "auth": {
           "type": "bearer",
@@ -385,7 +388,25 @@
           ]
         },
         "method": "POST",
-        "header": [],
+        "header": [
+          {
+            "key": "",
+            "value": ""
+          },
+          {
+            "key": "",
+            "value": ""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"joinCode\": \"{{JOIN_CODE}}\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
         "url": {
           "raw": "{{PROTOCOL}}://{{HOST}}:{{PORT}}/api/organisations/join-organisation",
           "protocol": "{{PROTOCOL}}",
