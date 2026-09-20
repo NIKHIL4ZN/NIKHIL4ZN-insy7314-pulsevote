@@ -33,3 +33,7 @@ ssl/
 
 # Test coverage
 coverage/
+
+# Playwright test output
+playwright-report/
+test-results/

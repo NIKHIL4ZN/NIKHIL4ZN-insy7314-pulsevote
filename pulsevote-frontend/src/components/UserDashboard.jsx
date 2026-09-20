@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import api from "../api/api";
 import { saveToken } from "../utils/auth";
 import { getErrorMessage } from "../utils/messages";
@@ -14,28 +14,47 @@ export default function UserDashboard() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function loadOrganisations(preferredId) {
-    const response = await api.get("/organisations/my-organisations");
-    setOrganisations(response.data);
-    setSelectedId(preferredId || selectedId || response.data[0]?._id || "");
+const loadOrganisations = useCallback(async (preferredId) => {
+  const response = await api.get("/organisations/my-organisations");
+
+  setOrganisations(response.data);
+
+  const nextId =
+    preferredId ||
+    response.data[0]?._id ||
+    "";
+
+  setSelectedId((currentSelectedId) =>
+    preferredId ||
+    currentSelectedId ||
+    nextId
+  );
+}, []);
+
+const loadPolls = useCallback(async () => {
+  if (!selectedId) {
+    setPolls([]);
+    return;
   }
 
-  async function loadPolls() {
-    if (!selectedId) {
-      setPolls([]);
-      return;
-    }
-    const response = await api.get(`/polls/get-polls/${selectedId}`);
-    setPolls(response.data);
-  }
+  const response = await api.get(
+    `/polls/get-polls/${selectedId}`
+  );
+
+  setPolls(response.data);
+}, [selectedId]);
 
   useEffect(() => {
-    loadOrganisations().catch((requestError) => setError(getErrorMessage(requestError)));
-  }, []);
+  loadOrganisations().catch((requestError) =>
+    setError(getErrorMessage(requestError))
+  );
+}, [loadOrganisations]);
 
-  useEffect(() => {
-    loadPolls().catch((requestError) => setError(getErrorMessage(requestError)));
-  }, [selectedId]);
+useEffect(() => {
+  loadPolls().catch((requestError) =>
+    setError(getErrorMessage(requestError))
+  );
+}, [loadPolls]);
 
   async function joinOrganisation(event) {
     event.preventDefault();

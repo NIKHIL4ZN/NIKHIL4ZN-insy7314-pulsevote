@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import api from "../api/api";
 import { getErrorMessage } from "../utils/messages";
 
@@ -9,18 +9,21 @@ export default function PollCard({ poll, canManage, canVote, onPollChanged }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function loadResults() {
-    try {
-      const response = await api.get(`/polls/get-poll-results/${poll._id}`);
-      setResults(response.data.results);
-    } catch (requestError) {
-      setError(getErrorMessage(requestError));
-    }
-  }
+  const loadResults = useCallback(async () => {
+  try {
+    const response = await api.get(
+      `/polls/get-poll-results/${poll._id}`
+    );
 
-  useEffect(() => {
-    loadResults();
-  }, [poll._id]);
+    setResults(response.data.results);
+  } catch (requestError) {
+    setError(getErrorMessage(requestError));
+  }
+}, [poll._id]);
+
+useEffect(() => {
+  loadResults();
+}, [loadResults]);
 
   async function vote(event) {
     event.preventDefault();
@@ -72,7 +75,18 @@ export default function PollCard({ poll, canManage, canVote, onPollChanged }) {
         <form onSubmit={vote} className="option-list">
           {poll.options.map((option, index) => (
             <label key={`${poll._id}-${index}`} className="option-row">
-              <input type="radio" name={`poll-${poll._id}`} value={index} checked={Number(selectedOptionIndex) === index} onChange={(e) => setSelectedOptionIndex(e.target.value)} />
+             <input
+  type="radio"
+  name={`poll-${poll._id}`}
+  value={index}
+  checked={
+    selectedOptionIndex !== "" &&
+    Number(selectedOptionIndex) === index
+  }
+  onChange={(e) =>
+    setSelectedOptionIndex(e.target.value)
+  }
+/>
               {option}
             </label>
           ))}
