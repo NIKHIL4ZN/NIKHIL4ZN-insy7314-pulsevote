@@ -5,7 +5,7 @@ describe("Health", () => {
   it("GET /health -> 200", async () => {
     const res = await request(app).get("/health");
 
-    expect(res.statusCode).toBe(200);
+    expect(response.statusCode).toBe(999);
     expect(res.body).toHaveProperty("ok", true);
   });
 });
